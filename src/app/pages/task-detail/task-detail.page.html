@@ -1,0 +1,162 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tasks"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Task Details</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editTask()" *ngIf="task">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="circular"></ion-spinner>
+    <p>Loading task details...</p>
+  </div>
+
+  <!-- Task Details -->
+  <div *ngIf="!isLoading && task" class="task-detail-container">
+    
+    <!-- Task Header -->
+    <div class="task-header">
+      <div class="header-content">
+        <h1 class="task-title">{{ task.title }}</h1>
+        
+        <div class="task-meta">
+          <ion-chip 
+            [color]="getStatusColor(task.status)" 
+            class="status-chip">
+            <ion-icon [name]="getStatusIcon(task.status)"></ion-icon>
+            <ion-label>{{ task.status | titlecase }}</ion-label>
+          </ion-chip>
+          
+          <ion-chip 
+            *ngIf="task.isLocal" 
+            color="warning" 
+            class="sync-chip">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            <ion-label>Pending Sync</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+    </div>
+
+    <!-- Task Content -->
+    <div class="task-content">
+      
+      <!-- Due Date Section -->
+      <ion-card class="info-card">
+        <ion-card-header>
+          <ion-card-title class="section-title">
+            <ion-icon name="calendar-outline"></ion-icon>
+            Due Date
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="due-date-container">
+            <p class="due-date" [class.overdue]="isOverdue()">
+              {{ formatDate(task.dueDate) }}
+            </p>
+            <ion-chip 
+              *ngIf="isOverdue()" 
+              color="danger" 
+              class="overdue-chip">
+              <ion-icon name="alert-circle-outline"></ion-icon>
+              <ion-label>Overdue</ion-label>
+            </ion-chip>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Description Section -->
+      <ion-card class="info-card">
+        <ion-card-header>
+          <ion-card-title class="section-title">
+            <ion-icon name="document-text-outline"></ion-icon>
+            Description
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <p class="task-description">{{ task.description }}</p>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Image Section -->
+      <ion-card class="info-card" *ngIf="task.image">
+        <ion-card-header>
+          <ion-card-title class="section-title">
+            <ion-icon name="image-outline"></ion-icon>
+            Attached Image
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="image-container">
+            <img [src]="task.image" alt="Task image" class="task-image">
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Task Info Section -->
+      <ion-card class="info-card">
+        <ion-card-header>
+          <ion-card-title class="section-title">
+            <ion-icon name="information-circle-outline"></ion-icon>
+            Task Information
+          </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="info-row">
+            <span class="info-label">Created:</span>
+            <span class="info-value">{{ formatDate(task.createdAt) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Last Updated:</span>
+            <span class="info-value">{{ formatDate(task.updatedAt) }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Task ID:</span>
+            <span class="info-value task-id">{{ task.id }}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <ion-button 
+        expand="block" 
+        (click)="toggleTaskStatus()"
+        [color]="getStatusColor(task.status)"
+        class="status-button">
+        <ion-icon [name]="getStatusIcon(task.status)" slot="start"></ion-icon>
+        {{ getNextStatusText(task.status) }}
+      </ion-button>
+
+      <div class="secondary-actions">
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          (click)="editTask()"
+          class="edit-button">
+          <ion-icon name="create-outline" slot="start"></ion-icon>
+          Edit Task
+        </ion-button>
+
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          color="danger"
+          (click)="deleteTask()"
+          class="delete-button">
+          <ion-icon name="trash-outline" slot="start"></ion-icon>
+          Delete Task
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

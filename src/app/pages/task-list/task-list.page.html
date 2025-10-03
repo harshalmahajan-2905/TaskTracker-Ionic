@@ -1,0 +1,145 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>My Tasks</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <!-- Offline Indicator -->
+  <div class="offline-indicator" *ngIf="!isOnline">
+    <ion-icon name="cloud-offline-outline"></ion-icon>
+    You are offline
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="search-filter-section">
+    <ion-searchbar 
+      [(ngModel)]="searchTerm"
+      (ionInput)="onSearchChange()"
+      placeholder="Search tasks..."
+      show-clear-button="focus">
+    </ion-searchbar>
+
+    <ion-segment [(ngModel)]="currentFilter" (ionChange)="filterTasks(currentFilter)">
+      <ion-segment-button value="all">
+        <ion-label>All</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="pending">
+        <ion-label>Pending</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="in-progress">
+        <ion-label>Active</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="completed">
+        <ion-label>Done</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="circular"></ion-spinner>
+    <p>Loading tasks...</p>
+  </div>
+
+  <!-- Refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Tasks List -->
+  <div *ngIf="!isLoading">
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredTasks.length === 0">
+      <ion-icon name="clipboard-outline" size="large"></ion-icon>
+      <h3>No tasks found</h3>
+      <p *ngIf="currentFilter === 'all' && !searchTerm">You haven't created any tasks yet.</p>
+      <p *ngIf="currentFilter !== 'all' || searchTerm">No tasks match your current filter.</p>
+      <ion-button fill="outline" (click)="addTask()" *ngIf="currentFilter === 'all' && !searchTerm">
+        <ion-icon name="add" slot="start"></ion-icon>
+        Create Your First Task
+      </ion-button>
+    </div>
+
+    <!-- Task Cards -->
+    <ion-list *ngIf="filteredTasks.length > 0">
+      <ion-card 
+        *ngFor="let task of filteredTasks" 
+        class="task-card"
+        (click)="viewTask(task.id)">
+        
+        <ion-card-header>
+          <div class="task-header">
+            <div class="task-info">
+              <ion-card-title>{{ task.title }}</ion-card-title>
+              <ion-card-subtitle>{{ formatDate(task.dueDate) }}</ion-card-subtitle>
+            </div>
+            <div class="task-actions">
+              <ion-chip 
+                [color]="getStatusColor(task.status)" 
+                class="task-status-chip">
+                <ion-icon [name]="getStatusIcon(task.status)"></ion-icon>
+                <ion-label>{{ task.status | titlecase }}</ion-label>
+              </ion-chip>
+            </div>
+          </div>
+        </ion-card-header>
+
+        <ion-card-content>
+          <p class="task-description">{{ task.description }}</p>
+          
+          <!-- Task Image -->
+          <img *ngIf="task.image" [src]="task.image" alt="Task image" class="task-image">
+          
+          <!-- Local/Offline indicator -->
+          <ion-chip *ngIf="task.isLocal" color="warning" class="local-indicator">
+            <ion-icon name="cloud-upload-outline"></ion-icon>
+            <ion-label>Pending sync</ion-label>
+          </ion-chip>
+
+          <!-- Action Buttons -->
+          <div class="card-actions">
+            <ion-button 
+              fill="clear" 
+              size="small" 
+              (click)="toggleTaskStatus(task); $event.stopPropagation()">
+              <ion-icon [name]="getStatusIcon(task.status)" slot="start"></ion-icon>
+              Update Status
+            </ion-button>
+            
+            <ion-button 
+              fill="clear" 
+              size="small" 
+              color="medium"
+              (click)="editTask(task.id); $event.stopPropagation()">
+              <ion-icon name="create-outline" slot="start"></ion-icon>
+              Edit
+            </ion-button>
+            
+            <ion-button 
+              fill="clear" 
+              size="small" 
+              color="danger"
+              (click)="deleteTask(task); $event.stopPropagation()">
+              <ion-icon name="trash-outline" slot="start"></ion-icon>
+              Delete
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="addTask()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+

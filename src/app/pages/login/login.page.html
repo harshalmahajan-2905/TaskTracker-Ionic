@@ -1,0 +1,62 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="login-container">
+    <div class="logo-section">
+      <ion-icon name="checkbox-outline" size="large" color="primary"></ion-icon>
+      <h1>TaskManagerApp</h1>
+      <p>Organize your tasks efficiently</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <ion-item fill="outline" class="form-item">
+        <ion-label position="floating">Email</ion-label>
+        <ion-input 
+          type="email" 
+          formControlName="email"
+          placeholder="Enter your email">
+        </ion-input>
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+      </ion-item>
+      <div class="error-message" *ngIf="email?.invalid && email?.touched">
+        <small *ngIf="email?.errors?.['required']">Email is required</small>
+        <small *ngIf="email?.errors?.['email']">Please enter a valid email</small>
+      </div>
+
+      <ion-item fill="outline" class="form-item">
+        <ion-label position="floating">Password</ion-label>
+        <ion-input 
+          type="password" 
+          formControlName="password"
+          placeholder="Enter your password">
+        </ion-input>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      </ion-item>
+      <div class="error-message" *ngIf="password?.invalid && password?.touched">
+        <small *ngIf="password?.errors?.['required']">Password is required</small>
+        <small *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</small>
+      </div>
+
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="isLoading"
+        class="login-button">
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <span *ngIf="!isLoading">Login</span>
+      </ion-button>
+    </form>
+
+    <div class="signup-section">
+      <p>Don't have an account?</p>
+      <ion-button fill="clear" (click)="goToSignup()">
+        Sign Up Here
+      </ion-button>
+    </div>
+  </div>
+</ion-content>
+

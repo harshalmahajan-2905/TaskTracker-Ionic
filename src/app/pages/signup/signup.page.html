@@ -1,0 +1,92 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/login"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Sign Up</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="signup-container">
+    <div class="logo-section">
+      <ion-icon name="checkbox-outline" size="large" color="primary"></ion-icon>
+      <h1>Create Account</h1>
+      <p>Join TaskManagerApp today</p>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSignup()">
+      <ion-item fill="outline" class="form-item">
+        <ion-label position="floating">Full Name</ion-label>
+        <ion-input 
+          type="text" 
+          formControlName="name"
+          placeholder="Enter your full name">
+        </ion-input>
+        <ion-icon name="person-outline" slot="start"></ion-icon>
+      </ion-item>
+      <div class="error-message" *ngIf="name?.invalid && name?.touched">
+        <small *ngIf="name?.errors?.['required']">Name is required</small>
+        <small *ngIf="name?.errors?.['minlength']">Name must be at least 2 characters</small>
+      </div>
+
+      <ion-item fill="outline" class="form-item">
+        <ion-label position="floating">Email</ion-label>
+        <ion-input 
+          type="email" 
+          formControlName="email"
+          placeholder="Enter your email">
+        </ion-input>
+        <ion-icon name="mail-outline" slot="start"></ion-icon>
+      </ion-item>
+      <div class="error-message" *ngIf="email?.invalid && email?.touched">
+        <small *ngIf="email?.errors?.['required']">Email is required</small>
+        <small *ngIf="email?.errors?.['email']">Please enter a valid email</small>
+      </div>
+
+      <ion-item fill="outline" class="form-item">
+        <ion-label position="floating">Password</ion-label>
+        <ion-input 
+          type="password" 
+          formControlName="password"
+          placeholder="Enter your password">
+        </ion-input>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      </ion-item>
+      <div class="error-message" *ngIf="password?.invalid && password?.touched">
+        <small *ngIf="password?.errors?.['required']">Password is required</small>
+        <small *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</small>
+      </div>
+
+      <ion-item fill="outline" class="form-item">
+        <ion-label position="floating">Confirm Password</ion-label>
+        <ion-input 
+          type="password" 
+          formControlName="confirmPassword"
+          placeholder="Confirm your password">
+        </ion-input>
+        <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+      </ion-item>
+      <div class="error-message" *ngIf="confirmPassword?.invalid && confirmPassword?.touched">
+        <small *ngIf="confirmPassword?.errors?.['required']">Please confirm your password</small>
+        <small *ngIf="confirmPassword?.errors?.['passwordMismatch']">Passwords do not match</small>
+      </div>
+
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="isLoading"
+        class="signup-button">
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <span *ngIf="!isLoading">Create Account</span>
+      </ion-button>
+    </form>
+
+    <div class="login-section">
+      <p>Already have an account?</p>
+      <ion-button fill="clear" (click)="goToLogin()">
+        Login Here
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

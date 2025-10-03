@@ -1,0 +1,125 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tasks"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add New Task</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="goBack()" fill="clear">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    
+    <!-- Task Title -->
+    <ion-item fill="outline" class="form-item">
+      <ion-label position="floating">Task Title *</ion-label>
+      <ion-input 
+        type="text" 
+        formControlName="title"
+        placeholder="Enter task title">
+      </ion-input>
+      <ion-icon name="document-text-outline" slot="start"></ion-icon>
+    </ion-item>
+    <div class="error-message" *ngIf="title?.invalid && title?.touched">
+      <small *ngIf="title?.errors?.['required']">Task title is required</small>
+      <small *ngIf="title?.errors?.['minlength']">Title must be at least 3 characters</small>
+    </div>
+
+    <!-- Task Description -->
+    <ion-item fill="outline" class="form-item textarea-item">
+      <ion-label position="floating">Description *</ion-label>
+      <ion-textarea 
+        formControlName="description"
+        placeholder="Enter task description..."
+        rows="4"
+        auto-grow="true">
+      </ion-textarea>
+      <ion-icon name="text-outline" slot="start"></ion-icon>
+    </ion-item>
+    <div class="error-message" *ngIf="description?.invalid && description?.touched">
+      <small *ngIf="description?.errors?.['required']">Description is required</small>
+      <small *ngIf="description?.errors?.['minlength']">Description must be at least 10 characters</small>
+    </div>
+
+    <!-- Due Date -->
+    <ion-item fill="outline" class="form-item">
+      <ion-label position="floating">Due Date *</ion-label>
+      <ion-datetime 
+        formControlName="dueDate"
+        presentation="date-time"
+        [min]="minDate"
+        display-format="MMM DD, YYYY HH:mm">
+      </ion-datetime>
+      <ion-icon name="calendar-outline" slot="start"></ion-icon>
+    </ion-item>
+    <div class="error-message" *ngIf="dueDate?.invalid && dueDate?.touched">
+      <small *ngIf="dueDate?.errors?.['required']">Due date is required</small>
+    </div>
+
+    <!-- Task Status -->
+    <ion-item fill="outline" class="form-item">
+      <ion-label position="floating">Initial Status</ion-label>
+      <ion-select formControlName="status" interface="popover">
+        <ion-select-option [value]="TaskStatus.PENDING">Pending</ion-select-option>
+        <ion-select-option [value]="TaskStatus.IN_PROGRESS">In Progress</ion-select-option>
+        <ion-select-option [value]="TaskStatus.COMPLETED">Completed</ion-select-option>
+      </ion-select>
+      <ion-icon name="flag-outline" slot="start"></ion-icon>
+    </ion-item>
+
+    <!-- Image Section -->
+    <div class="image-section">
+      <h3>Task Image (Optional)</h3>
+      
+      <div class="image-container" *ngIf="selectedImage">
+        <img [src]="selectedImage" alt="Selected task image" class="selected-image">
+        <ion-button 
+          fill="clear" 
+          color="danger" 
+          class="remove-image-btn"
+          (click)="selectedImage = undefined">
+          <ion-icon name="close-circle"></ion-icon>
+        </ion-button>
+      </div>
+
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        (click)="selectImage()"
+        class="select-image-btn">
+        <ion-icon name="camera-outline" slot="start"></ion-icon>
+        {{ selectedImage ? 'Change Image' : 'Add Image' }}
+      </ion-button>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <ion-button 
+        expand="block" 
+        type="submit" 
+        [disabled]="isLoading"
+        class="submit-button">
+        <ion-spinner *ngIf="isLoading" name="crescent"></ion-spinner>
+        <span *ngIf="!isLoading">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          Create Task
+        </span>
+      </ion-button>
+
+      <ion-button 
+        expand="block" 
+        fill="clear" 
+        color="medium"
+        (click)="goBack()"
+        [disabled]="isLoading">
+        Cancel
+      </ion-button>
+    </div>
+  </form>
+</ion-content>
+
