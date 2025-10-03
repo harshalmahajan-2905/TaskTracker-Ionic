@@ -290,20 +290,14 @@ export const environment = {
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the ISC License.
-
 ## 👨‍💻 Author
 
 **Harshal Mahajan** - [@harshalmahajan-2905](https://github.com/harshalmahajan-2905)
 
-## 🔗 Live Demo
+## 🌐 Live Links
 
-- **Frontend**: [Deploy to Netlify](https://netlify.com)
-- **Backend**: [Deploy to Render](https://render.com)
-
----
+- **Frontend (Netlify)**: https://tasktrackerionic.netlify.app/
+- **Backend (Render)**: https://tasktracker-ionic-w6rz.onrender.com
 
 ## 🆘 Troubleshooting
 
